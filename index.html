@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فطاطري جدو | أصل الفطير والبيتزا في العجمي - الإسكندرية</title>
+    <!-- خط Cairo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome الأيقونات -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { cairo: ['Cairo', 'sans-serif'] },
+                    colors: {
+                        espresso: '#18120e',
+                        cardDark: '#231b16',
+                        amberGold: '#f59e0b',
+                        amberDeep: '#d97706',
+                        burntOrange: '#ea580c',
+                        creamText: '#faf5f0'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #18120e; color: #faf5f0; overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #18120e; }
+        ::-webkit-scrollbar-thumb { background: #d97706; border-radius: 9999px; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- الإشعارات -->
+    <div id="toast-container" class="fixed bottom-20 left-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- سلة المشتريات الجانبية -->
+    <div id="cart-drawer" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden">
+        <div class="absolute top-0 left-0 bottom-0 w-full max-w-sm bg-cardDark border-r border-amber-500/20 p-5 flex flex-col shadow-2xl transform -translate-x-full transition-transform duration-300" id="cart-content-box">
+            <div class="flex items-center justify-between pb-3 border-b border-amber-500/20">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-bag-shopping text-amberGold text-lg"></i>
+                    <h3 class="text-lg font-black text-creamText">سلة طلباتك</h3>
+                </div>
+                <button onclick="toggleCart()" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-creamText">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div id="cart-items" class="flex-1 overflow-y-auto py-3 space-y-2 divide-y divide-amber-500/10">
+                <div class="text-center py-10 text-amber-200/50 text-sm">السلة فارغة حالياً</div>
+            </div>
+
+            <div class="pt-3 border-t border-amber-500/20 space-y-3">
+                <div class="flex items-center justify-between font-bold text-sm">
+                    <span class="text-amber-100/80">الإجمالي:</span>
+                    <span id="cart-total" class="text-amberGold font-black text-lg">0 ج.م</span>
+                </div>
+                <button onclick="checkoutWhatsApp()" class="w-full bg-green-600 hover:bg-green-500 text-white font-black py-3 rounded-xl flex items-center justify-center gap-2 shadow-lg text-sm">
+                    <i class="fa-brands fa-whatsapp text-xl"></i>
+                    إرسال الطلب عبر واتساب
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- الهيدر البسيط للموبايل -->
+    <header class="fixed top-0 inset-x-0 z-40 bg-espresso/95 backdrop-blur-md border-b border-amber-500/15">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <a href="#home" class="flex items-center gap-2.5">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amberGold to-burntOrange flex items-center justify-center text-espresso text-lg shadow-md">
+                    <i class="fa-solid fa-crown"></i>
+                </div>
+                <div>
+                    <span class="text-lg font-black text-creamText block leading-tight">فطاطري جدو</span>
+                    <span class="text-[10px] text-amber-200/70">العجمي • 24 ساعة</span>
+                </div>
+            </a>
+
+            <div class="flex items-center gap-2">
+                <a href="tel:01040058147" class="w-9 h-9 rounded-xl bg-white/5 border border-amber-500/25 flex items-center justify-center text-amberGold text-sm">
+                    <i class="fa-solid fa-phone"></i>
+                </a>
+                <button onclick="toggleCart()" class="relative flex items-center gap-1.5 bg-burntOrange text-white px-3.5 py-2 rounded-xl font-black text-xs shadow-md">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <span>السلة</span>
+                    <span id="header-cart-badge" class="bg-espresso text-amberGold font-black text-[10px] min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- القسم الرئيسي (Hero) -->
+    <section id="home" class="pt-24 pb-10 px-4 text-center">
+        <div class="max-w-xl mx-auto space-y-4">
+            <span class="inline-flex items-center gap-1.5 bg-green-500/15 border border-green-500/30 text-green-300 px-3 py-1 rounded-full text-xs font-bold">
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                مفتوح الآن على مدار 24 ساعة
+            </span>
+            <h1 class="text-3xl sm:text-4xl font-black text-creamText leading-tight">
+                أصل الفطير والبيتزا <span class="text-amberGold">في العجمي</span>
+            </h1>
+            <p class="text-amber-100/75 text-xs sm:text-sm leading-relaxed">
+                اطلب أشهى الفطير الشرقي والحلو، البيتزا الإيطالي، الكريب، والمكرونات بأفضل الأسعار وأسرع دليفري.
+            </p>
+            <div class="flex gap-2 justify-center pt-2">
+                <a href="#menu" class="flex-1 bg-gradient-to-r from-burntOrange to-amberDeep text-white font-black py-3 px-4 rounded-xl text-xs shadow-lg">
+                    تصفح المنيو
+                </a>
+                <a href="tel:01040058147" class="flex-1 bg-cardDark border border-amberGold/30 text-creamText font-bold py-3 px-4 rounded-xl text-xs">
+                    اتصل بنا
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- المنيو (Menu) -->
+    <section id="menu" class="py-10 px-4 bg-[#150e0a]">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-black text-creamText">قائمة الطعام</h2>
+                <p class="text-amber-100/60 text-xs mt-1">اضغط على المقاس لإضافة الصنف للسلة</p>
+            </div>
+
+            <!-- أزرار التصنيفات (مخصصة للموبايل بتمرير أفقي سلس) -->
+            <div class="flex gap-2 overflow-x-auto pb-3 mb-6 hide-scrollbar text-xs">
+                <button onclick="setCategory('all')" data-cat="all" class="cat-btn active whitespace-nowrap px-4 py-2.5 rounded-xl font-bold bg-burntOrange text-white shrink-0">الكل</button>
+                <button onclick="setCategory('pizza')" data-cat="pizza" class="cat-btn whitespace-nowrap px-4 py-2.5 rounded-xl font-bold bg-cardDark text-amber-100/80 border border-amber-500/2output shrink-0">🍕 بيتزا</button>
+                <button onclick="setCategory('savory_pie')" data-cat="savory_pie" class="cat-btn whitespace-nowrap px-4 py-2.5 rounded-xl font-bold bg-cardDark text-amber-100/80 border border-amber-500/20 shrink-0">🥧 فطير حادق</button>
+                <button onclick="setCategory('sweet_pie')" data-cat="sweet_pie" class="cat-btn whitespace-nowrap px-4 py-2.5 rounded-xl font-bold bg-cardDark text-amber-100/80 border border-amber-500/20 shrink-0">🍯 فطير حلو</button>
+                <button onclick="setCategory('iskandarani')" data-cat="iskandarani" class="cat-btn whitespace-nowrap px-4 py-2.5 rounded-xl font-bold bg-cardDark text-amber-100/80 border border-amber-500/20 shrink-0">🥖 مطبق</button>
+                <button onclick="setCategory('crepe')" data-cat="crepe" class="cat-btn whitespace-nowrap px-4 py-2.5 rounded-xl font-bold bg-cardDark text-amber-100/80 border border-amber-500/20 shrink-0">🌯 كريب</button>
+                <button onclick="setCategory('hawawshi')" data-cat="hawawshi" class="cat-btn whitespace-nowrap px-4 py-2.5 rounded-xl font-bold bg-cardDark text-amber-100/80 border border-amber-500/20 shrink-0">🔥 حواوشي</button>
+                <button onclick="setCategory('pasta')" data-cat="pasta" class="cat-btn whitespace-nowrap px-4 py-2.5 rounded-xl font-bold bg-cardDark text-amber-100/80 border border-amber-500/20 shrink-0">🍝 مكرونة</button>
+                <button onclick="setCategory('saroukh')" data-cat="saroukh" class="cat-btn whitespace-nowrap px-4 py-2.5 rounded-xl font-bold bg-cardDark text-amber-100/80 border border-amber-500/20 shrink-0">🌯 صاروخ</button>
+                <button onclick="setCategory('syrian')" data-cat="syrian" class="cat-btn whitespace-nowrap px-4 py-2.5 rounded-xl font-bold bg-cardDark text-amber-100/80 border border-amber-500/20 shrink-0">🌮 سوري</button>
+            </div>
+
+            <!-- بحث سريح -->
+            <div class="relative mb-6">
+                <input type="text" id="search-input" oninput="renderMenu()" placeholder="ابحث عن صنف..." class="w-full bg-cardDark border border-amber-500/25 rounded-xl py-2.5 pr-10 pl-4 text-xs text-creamText placeholder-amber-200/40 focus:outline-none focus:border-amberGold">
+                <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-1/2 -translate-y-1/2 text-amberGold/70 text-xs"></i>
+            </div>
+
+            <!-- شبكة الأصناف المبسطة -->
+            <div id="menu-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+        </div>
+    </section>
+
+    <!-- التذييل مع التوقيع المطلوب -->
+    <footer class="bg-espresso border-t border-amber-500/15 py-6 px-4 text-center space-y-2">
+        <p class="text-xs text-amber-200/70">فطاطري جدو - العجمي أبو يوسف الكيلو 19.5 بجوار رنين</p>
+        <p class="text-xs font-bold text-amberGold">
+            أنشأ بواسطة إياد إيهاب • <span dir="ltr">01204993406</span>
+        </p>
+    </footer>
+
+    <!-- سكربت التشغيل المبسط -->
+    <script>
+        const menuItems = [
+            { id: 1, name: 'بيتزا مارجريتا', category: 'pizza', prices: { S: 80, M: 120, L: 180 } },
+            { id: 2, name: 'بيتزا تشيزي', category: 'pizza', prices: { S: 80, M: 120, L: 180 } },
+            { id: 3, name: 'بيتزا مشكل جبن', category: 'pizza', prices: { S: 110, M: 170, L: 270 } },
+            { id: 4, name: 'بيتزا سدق', category: 'pizza', prices: { S: 110, M: 160, L: 270 } },
+            { id: 5, name: 'بيتزا بسطرمة', category: 'pizza', prices: { S: 110, M: 170, L: 280 } },
+            { id: 6, name: 'بيتزا لحمة مفرومة', category: 'pizza', prices: { S: 110, M: 160, L: 270 } },
+            { id: 7, name: 'بيتزا سوسيس', category: 'pizza', prices: { S: 110, M: 160, L: 250 } },
+            { id: 8, name: 'بيتزا سلامي', category: 'pizza', prices: { S: 120, M: 170, L: 270 } },
+            { id: 9, name: 'بيتزا مشكل لحوم', category: 'pizza', prices: { S: 120, M: 180, L: 290 } },
+            { id: 10, name: 'بيتزا سوبر سوبريم', category: 'pizza', prices: { S: 130, M: 180, L: 290 } },
+            { id: 11, name: 'بيتزا عزيز', category: 'pizza', prices: { S: 110, M: 180, L: 290 } },
+            { id: 12, name: 'بيتزا فراخ', category: 'pizza', prices: { S: 110, M: 170, L: 280 } },
+            { id: 13, name: 'بيتزا كرسبي', category: 'pizza', prices: { S: 110, M: 170, L: 280 } },
+            { id: 14, name: 'بيتزا فاهيتا فراخ', category: 'pizza', prices: { S: 110, M: 180, L: 280 } },
+            { id: 15, name: 'بيتزا تشكن رانش', category: 'pizza', prices: { S: 120, M: 180, L: 280 } },
+            { id: 16, name: 'بيتزا تشكن باربيكيو', category: 'pizza', prices: { S: 120, M: 180, L: 280 } },
+            { id: 17, name: 'بيتزا مشكل فراخ', category: 'pizza', prices: { S: 120, M: 180, L: 290 } },
+            { id: 18, name: 'بيتزا مشروم', category: 'pizza', prices: { S: 110, M: 160, L: 250 } },
+            { id: 19, name: 'بيتزا تونة', category: 'pizza', prices: { S: 120, M: 180, L: 290 } },
+            { id: 20, name: 'بيتزا تونة كيري', category: 'pizza', prices: { S: 150, M: 200, L: 320 } },
+            { id: 21, name: 'بيتزا جمبري', category: 'pizza', prices: { S: 200, M: 320, L: 450 } },
+            { id: 22, name: 'بيتزا سي فود', category: 'pizza', prices: { S: 220, M: 350, L: 500 } },
+
+            { id: 30, name: 'فطيرة موتزاريلا', category: 'savory_pie', prices: { M: 130, L: 230 } },
+            { id: 31, name: 'فطيرة رومي', category: 'savory_pie', prices: { M: 130, L: 230 } },
+            { id: 32, name: 'فطيرة كيري', category: 'savory_pie', prices: { M: 170, L: 270 } },
+            { id: 33, name: 'فطيرة مشكل جبن', category: 'savory_pie', prices: { M: 170, L: 270 } },
+            { id: 34, name: 'فطيرة سدق', category: 'savory_pie', prices: { M: 170, L: 270 } },
+            { id: 35, name: 'فطيرة سدق كيري', category: 'savory_pie', prices: { M: 180, L: 290 } },
+            { id: 36, name: 'فطيرة بسطرمة', category: 'savory_pie', prices: { M: 170, L: 270 } },
+            { id: 37, name: 'فطيرة لحمة مفرومة', category: 'savory_pie', prices: { M: 160, L: 270 } },
+            { id: 38, name: 'فطيرة سوسيس', category: 'savory_pie', prices: { M: 160, L: 250 } },
+            { id: 39, name: 'فطيرة سلامي', category: 'savory_pie', prices: { M: 180, L: 290 } },
+            { id: 40, name: 'فطيرة مشكل لحوم', category: 'savory_pie', prices: { M: 180, L: 290 } },
+            { id: 41, name: 'فطيرة قنبلة جدو', category: 'savory_pie', prices: { M: 180, L: 290 } },
+            { id: 42, name: 'فطيرة فراخ', category: 'savory_pie', prices: { M: 170, L: 290 } },
+            { id: 43, name: 'فطيرة كريسبي', category: 'savory_pie', prices: { M: 180, L: 290 } },
+            { id: 44, name: 'فطيرة فاهيتا', category: 'savory_pie', prices: { M: 180, L: 300 } },
+            { id: 45, name: 'فطيرة مشكل فراخ', category: 'savory_pie', prices: { M: 180, L: 300 } },
+            { id: 46, name: 'فطيرة مشروم', category: 'savory_pie', prices: { M: 160, L: 250 } },
+            { id: 47, name: 'فطيرة تونة', category: 'savory_pie', prices: { M: 180, L: 300 } },
+            { id: 48, name: 'فطيرة جمبري', category: 'savory_pie', prices: { M: 320, L: 470 } },
+            { id: 49, name: 'فطيرة سي فود', category: 'savory_pie', prices: { M: 370, L: 520 } },
+            { id: 50, name: 'فطير مشلتت', category: 'savory_pie', prices: { M: 130, L: 180 } },
+
+            { id: 60, name: 'فطيرة سكر سادة', category: 'sweet_pie', prices: { M: 40, L: 80 } },
+            { id: 61, name: 'فطيرة كاسترد', category: 'sweet_pie', prices: { M: 55, L: 100 } },
+            { id: 62, name: 'فطيرة بـ قشطة', category: 'sweet_pie', prices: { M: 75, L: 110 } },
+            { id: 63, name: 'فطيرة ملوكة', category: 'sweet_pie', prices: { M: 80, L: 130 } },
+            { id: 64, name: 'فطيرة قشطة وعسل', category: 'sweet_pie', prices: { M: 140, L: 230 } },
+            { id: 65, name: 'فطيرة شيري (صوص القهوة)', category: 'sweet_pie', prices: { M: 150, L: 230 } },
+            { id: 66, name: 'فطيرة لولو (صوص الفسدق)', category: 'sweet_pie', prices: { M: 200, L: 250 } },
+            { id: 67, name: 'فطيرة سبنا', category: 'sweet_pie', prices: { M: 180, L: 250 } },
+            { id: 68, name: 'فطيرة مكسرات وفواكة', category: 'sweet_pie', prices: { M: 150, L: 230 } },
+            { id: 69, name: 'فطيرة كنافة وبسبوسة بندق', category: 'sweet_pie', prices: { M: 150, L: 230 } },
+            { id: 70, name: 'فطيرة فواكه', category: 'sweet_pie', prices: { M: 150, L: 230 } },
+            { id: 71, name: 'فطيرة شوكولاتة سادة', category: 'sweet_pie', prices: { M: 120, L: 200 } },
+            { id: 72, name: 'فطيرة شوكولاتة مكسرات', category: 'sweet_pie', prices: { M: 150, L: 230 } },
+            { id: 73, name: 'فطيرة شوكولاتة ميكس', category: 'sweet_pie', prices: { M: 150, L: 230 } },
+            { id: 74, name: 'فطيرة أوريو وهوموز', category: 'sweet_pie', prices: { M: 150, L: 230 } },
+            { id: 75, name: 'فطيرة لوتس', category: 'sweet_pie', prices: { M: 120, L: 230 } },
+            { id: 76, name: 'فطيرة حلو جدو', category: 'sweet_pie', prices: { M: 200, L: 280 } },
+
+            { id: 80, name: 'المطبقة رومي', category: 'iskandarani', prices: { M: 120, L: 200 } },
+            { id: 81, name: 'المطبقة موتزاريلا', category: 'iskandarani', prices: { M: 120, L: 200 } },
+            { id: 82, name: 'المطبقة مشكل جبن', category: 'iskandarani', prices: { M: 140, L: 220 } },
+            { id: 83, name: 'المطبقة سدق', category: 'iskandarani', prices: { M: 130, L: 210 } },
+            { id: 84, name: 'المطبقة بسطرمة', category: 'iskandarani', prices: { M: 130, L: 210 } },
+            { id: 85, name: 'المطبقة لحمة مفرومة', category: 'iskandarani', prices: { M: 120, L: 210 } },
+            { id: 86, name: 'المطبقة سوسيس', category: 'iskandarani', prices: { M: 140, L: 210 } },
+            { id: 87, name: 'المطبقة سلامي', category: 'iskandarani', prices: { M: 150, L: 230 } },
+            { id: 88, name: 'المطبقة مشكل لحوم', category: 'iskandarani', prices: { M: 130, L: 210 } },
+            { id: 89, name: 'المطبقة فراخ', category: 'iskandarani', prices: { M: 140, L: 230 } },
+            { id: 90, name: 'المطبقة مشكل فراخ', category: 'iskandarani', prices: { M: 130, L: 210 } },
+            { id: 91, name: 'المطبقة تونة', category: 'iskandarani', prices: { M: 180, L: 220 } },
+            { id: 92, name: 'المطبقة جمبري', category: 'iskandarani', prices: { M: 200, L: 280 } },
+            { id: 93, name: 'المطبقة سي فود', category: 'iskandarani', prices: { M: 230, L: 320 } },
+
+            { id: 100, name: 'كريب موتزاريلا', category: 'crepe', prices: { single: 70 } },
+            { id: 101, name: 'كريب رومي', category: 'crepe', prices: { single: 80 } },
+            { id: 102, name: 'كريب بطاطس', category: 'crepe', prices: { single: 80 } },
+            { id: 103, name: 'كريب مشكل جبن', category: 'crepe', prices: { single: 100 } },
+            { id: 104, name: 'كريب سدق', category: 'crepe', prices: { single: 100 } },
+            { id: 105, name: 'كريب بسطرمة', category: 'crepe', prices: { single: 100 } },
+            { id: 106, name: 'كريب لحمة مفرومة', category: 'crepe', prices: { single: 110 } },
+            { id: 107, name: 'كريب برجر', category: 'crepe', prices: { single: 110 } },
+            { id: 108, name: 'كريب كفته', category: 'crepe', prices: { single: 110 } },
+            { id: 109, name: 'كريب سوسيس', category: 'crepe', prices: { single: 100 } },
+            { id: 110, name: 'كريب مشكل لحوم', category: 'crepe', prices: { single: 120 } },
+            { id: 111, name: 'كريب فراخ', category: 'crepe', prices: { single: 120 } },
+            { id: 112, name: 'كريب بانيه', category: 'crepe', prices: { single: 80 } },
+            { id: 113, name: 'كريب استريبس', category: 'crepe', prices: { single: 100 } },
+            { id: 114, name: 'كريب زنجر', category: 'crepe', prices: { single: 100 } },
+            { id: 115, name: 'كريب كوردون بلو', category: 'crepe', prices: { single: 110 } },
+            { id: 116, name: 'كريب مشكل فراخ', category: 'crepe', prices: { single: 120 } },
+            { id: 117, name: 'كريب مشروم', category: 'crepe', prices: { single: 110 } },
+            { id: 118, name: 'كريب تونة', category: 'crepe', prices: { single: 110 } },
+            { id: 119, name: 'كريب جمبري', category: 'crepe', prices: { single: 150 } },
+            { id: 120, name: 'كريب سي فود', category: 'crepe', prices: { single: 180 } },
+            { id: 121, name: 'كريب شوكولاتة', category: 'crepe', prices: { single: 70 } },
+            { id: 122, name: 'كريب شوكولاتة موز', category: 'crepe', prices: { single: 80 } },
+            { id: 123, name: 'كريب شوكولاتة مكسرات', category: 'crepe', prices: { single: 100 } },
+            { id: 124, name: 'كريب شوكولاتة فواكه', category: 'crepe', prices: { single: 100 } },
+            { id: 125, name: 'كريب ميكس شوكولاتة', category: 'crepe', prices: { single: 100 } },
+            { id: 126, name: 'كريب لوتس', category: 'crepe', prices: { single: 80 } },
+            { id: 127, name: 'كريب أوريو وهوموز', category: 'crepe', prices: { single: 100 } },
+            { id: 128, name: 'كريب كولكشن لوتس', category: 'crepe', prices: { single: 100 } },
+            { id: 129, name: 'كريب كله بلاي', category: 'crepe', prices: { single: 110 } },
+            { id: 130, name: 'كريب التمساح', category: 'crepe', prices: { single: 120 } },
+
+            { id: 140, name: 'حواوشي لحمة', category: 'hawawshi', prices: { M: 100, L: 160 } },
+            { id: 141, name: 'حواوشي سدق', category: 'hawawshi', prices: { M: 100, L: 150 } },
+            { id: 142, name: 'حواوشي بسطرمة', category: 'hawawshi', prices: { M: 120, L: 150 } },
+            { id: 143, name: 'حواوشي فراخ', category: 'hawawshi', prices: { M: 120, L: 160 } },
+            { id: 144, name: 'حواوشي مشكل لحوم', category: 'hawawshi', prices: { M: 120, L: 160 } },
+            { id: 145, name: 'حواوشي مشكل فراخ', category: 'hawawshi', prices: { M: 120, L: 160 } },
+            { id: 146, name: 'حواوشي مشكل جبن', category: 'hawawshi', prices: { M: 120, L: 150 } },
+            { id: 147, name: 'حواوشي اسكندراني', category: 'hawawshi', prices: { M: 220, L: 250 } },
+
+            { id: 150, name: 'مكرونة خضار', category: 'pasta', prices: { M: 70, L: 100 } },
+            { id: 151, name: 'مكرونة مشكل جبن', category: 'pasta', prices: { M: 110, L: 160 } },
+            { id: 152, name: 'مكرونة سدق', category: 'pasta', prices: { M: 110, L: 160 } },
+            { id: 153, name: 'مكرونة بسطرمة', category: 'pasta', prices: { M: 110, L: 170 } },
+            { id: 154, name: 'مكرونة لحمة مفرومة', category: 'pasta', prices: { M: 110, L: 160 } },
+            { id: 155, name: 'مكرونة سوسيس', category: 'pasta', prices: { M: 100, L: 150 } },
+            { id: 156, name: 'مكرونة مشكل لحوم', category: 'pasta', prices: { M: 120, L: 180 } },
+            { id: 157, name: 'مكرونة فراخ', category: 'pasta', prices: { M: 110, L: 170 } },
+            { id: 158, name: 'مكرونة نجرسكو', category: 'pasta', prices: { M: 120, L: 170 } },
+            { id: 159, name: 'مكرونة مشكل فراخ', category: 'pasta', prices: { M: 120, L: 180 } },
+            { id: 160, name: 'مكرونة مشروم', category: 'pasta', prices: { M: 100, L: 155 } },
+            { id: 161, name: 'مكرونة تونة', category: 'pasta', prices: { M: 130, L: 180 } },
+            { id: 162, name: 'مكرونة جمبري', category: 'pasta', prices: { M: 230, L: 320 } },
+            { id: 163, name: 'مكرونة سي فود', category: 'pasta', prices: { M: 250, L: 290 } },
+
+            { id: 170, name: 'وتش سدق', category: 'saroukh', prices: { single: 120 } },
+            { id: 171, name: 'وتش بسطرمة', category: 'saroukh', prices: { single: 130 } },
+            { id: 172, name: 'وتش لحمة مفرومة', category: 'saroukh', prices: { single: 120 } },
+            { id: 173, name: 'وتش سوسيس', category: 'saroukh', prices: { single: 110 } },
+            { id: 174, name: 'وتش فراخ', category: 'saroukh', prices: { single: 120 } },
+            { id: 175, name: 'وتش كريسبي', category: 'saroukh', prices: { single: 120 } },
+            { id: 176, name: 'وتش مشكل جبن', category: 'saroukh', prices: { single: 130 } },
+            { id: 177, name: 'وتش مشكل لحوم', category: 'saroukh', prices: { single: 130 } },
+            { id: 178, name: 'وتش مشكل فراخ', category: 'saroukh', prices: { single: 130 } },
+            { id: 179, name: 'وتش جمبري', category: 'saroukh', prices: { single: 200 } },
+            { id: 180, name: 'وتش سي فود', category: 'saroukh', prices: { single: 250 } },
+
+            { id: 190, name: 'سوري مشكل فراخ', category: 'syrian', prices: { single: 120 } },
+            { id: 191, name: 'سوري شامورما لحمه', category: 'syrian', prices: { single: 120 } },
+            { id: 192, name: 'سوري سدق', category: 'syrian', prices: { single: 100 } },
+            { id: 193, name: 'سوري بسطرمة', category: 'syrian', prices: { single: 100 } },
+            { id: 194, name: 'سوري فراخ', category: 'syrian', prices: { single: 100 } },
+            { id: 195, name: 'سوري بطاطس', category: 'syrian', prices: { single: 80 } },
+            { id: 196, name: 'سوري استريبس', category: 'syrian', prices: { single: 100 } }
+        ];
+
+        let currentCategory = 'all';
+        let cart = [];
+
+        function setCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                if(btn.dataset.cat === cat) {
+                    btn.className = "cat-btn active whitespace-nowrap px-4 py-2.5 rounded-xl font-bold bg-burntOrange text-white shrink-0";
+                } else {
+                    btn.className = "cat-btn whitespace-nowrap px-4 py-2.5 rounded-xl font-bold bg-cardDark text-amber-100/80 border border-amber-500/20 shrink-0";
+                }
+            });
+            renderMenu();
+        }
+
+        function renderMenu() {
+            const grid = document.getElementById('menu-grid');
+            const query = document.getElementById('search-input').value.toLowerCase();
+            
+            const filtered = menuItems.filter(item => {
+                const matchesCat = currentCategory === 'all' || item.category === currentCategory;
+                const matchesSearch = item.name.toLowerCase().includes(query);
+                return matchesCat && matchesSearch;
+            });
+
+            if(filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-8 text-amber-200/50 text-xs">عذراً، لم نجد صنف مطابق لبحثك.</div>`;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(item => {
+                let buttonsHtml = '';
+                if(item.prices.single) {
+                    buttonsHtml = `<button onclick="addToCartItem(${item.id}, 'عادي', ${item.prices.single})" class="bg-amberGold/20 hover:bg-amberGold text-amberGold hover:text-espresso font-bold py-1.5 px-3 rounded-xl text-xs transition-all flex items-center justify-center gap-1"><i class="fa-solid fa-plus"></i> (${item.prices.single} ج)</button>`;
+                } else {
+                    let buttonsList = [];
+                    for(let size in item.prices) {
+                        let sizeName = size === 'S' ? 'صغير' : size === 'M' ? 'وسط' : 'كبير';
+                        let price = item.prices[size];
+                        buttonsList.push(`<button onclick="addToCartItem(${item.id}, '${sizeName}', ${price})" class="bg-white/5 hover:bg-amberGold hover:text-espresso text-creamText border border-amber-500/20 font-bold py-1.5 px-2 rounded-xl text-[11px] transition-all">${sizeName}: ${price}ج</button>`);
+                    }
+                    buttonsHtml = `<div class="flex gap-1 flex-wrap">${buttonsList.join('')}</div>`;
+                }
+
+                return `
+                    <div class="bg-cardDark border border-amber-500/20 rounded-xl p-3.5 flex items-center justify-between gap-3 shadow-md">
+                        <div>
+                            <h3 class="font-bold text-creamText text-xs sm:text-sm">${item.name}</h3>
+                        </div>
+                        <div>
+                            ${buttonsHtml}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function addToCartItem(id, sizeName, price) {
+            const item = menuItems.find(i => i.id === id);
+            const cartKey = `${item.name} - ${sizeName}`;
+            const existing = cart.find(c => c.key === cartKey);
+            
+            if(existing) {
+                existing.qty++;
+            } else {
+                cart.push({ key: cartKey, name: item.name, size: sizeName, price: price, qty: 1 });
+            }
+            updateCartUI();
+            showToast(`تمت إضافة "${item.name} (${sizeName})"`);
+        }
+
+        function updateCartUI() {
+            const badge = document.getElementById('header-cart-badge');
+            const container = document.getElementById('cart-items');
+            const totalEl = document.getElementById('cart-total');
+
+            const totalCount = cart.reduce((sum, i) => sum + i.qty, 0);
+            badge.innerText = totalCount;
+
+            if(cart.length === 0) {
+                container.innerHTML = `<div class="text-center py-10 text-amber-200/50 text-xs">السلة فارغة حالياً</div>`;
+                totalEl.innerText = '0 ج.م';
+                return;
+            }
+
+            let totalPrice = 0;
+            container.innerHTML = cart.map((item, index) => {
+                let itemTotal = item.price * item.qty;
+                totalPrice += itemTotal;
+                return `
+                    <div class="flex items-center justify-between py-2">
+                        <div>
+                            <h4 class="font-bold text-xs text-creamText">${item.name} (${item.size})</h4>
+                            <p class="text-[10px] text-amber-200/70">${item.price} ج.م × ${item.qty}</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="flex items-center gap-1.5 bg-espresso px-2 py-0.5 rounded-lg border border-amber-500/20">
+                                <button onclick="changeQty(${index}, -1)" class="text-amberGold text-xs font-bold px-1">-</button>
+                                <span class="text-[11px] font-black text-creamText">${item.qty}</span>
+                                <button onclick="changeQty(${index}, 1)" class="text-amberGold text-xs font-bold px-1">+</button>
+                            </div>
+                            <button onclick="removeItem(${index})" class="text-red-400 text-xs p-1"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            totalEl.innerText = `${totalPrice} ج.م`;
+        }
+
+        function changeQty(index, delta) {
+            cart[index].qty += delta;
+            if(cart[index].qty <= 0) cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        function removeItem(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        function toggleCart() {
+            const drawer = document.getElementById('cart-drawer');
+            const box = document.getElementById('cart-content-box');
+            if(drawer.classList.contains('hidden')) {
+                drawer.classList.remove('hidden');
+                setTimeout(() => box.classList.remove('-translate-x-full'), 10);
+            } else {
+                box.classList.add('-translate-x-full');
+                setTimeout(() => drawer.classList.add('hidden'), 300);
+            }
+        }
+
+        function checkoutWhatsApp() {
+            if(cart.length === 0) {
+                showToast('السلة فارغة!');
+                return;
+            }
+            let message = "مرحباً فطاطري جدو، أود طلب الأصناف الآتية:\n\n";
+            let total = 0;
+            cart.forEach((item, idx) => {
+                let sub = item.price * item.qty;
+                total += sub;
+                message += `${idx+1}. ${item.name} (${item.size}) - الكمية: ${item.qty} - السعر: ${sub} ج\n`;
+            });
+            message += `\nالإجمالي الكلي: ${total} ج.م\nشكراً لكم!`;
+            window.open(`https://wa.me/201040058147?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        function showToast(text) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = "bg-espresso border border-amberGold/40 text-creamText px-3 py-2 rounded-xl shadow-xl flex items-center gap-2 text-xs font-bold";
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-amberGold"></i><span>${text}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 2500);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => { renderMenu(); });
+    </script>
+</body>
+</html>
