@@ -73,7 +73,7 @@
         </div>
     </div>
 
-    <!-- الهيدر البسيط للموبايل -->
+    <!-- الهيدر -->
     <header class="fixed top-0 inset-x-0 z-40 bg-espresso/95 backdrop-blur-md border-b border-amber-500/15">
         <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
             <a href="#home" class="flex items-center gap-2.5">
@@ -123,48 +123,121 @@
         </div>
     </section>
 
-    <!-- المنيو (Menu) -->
+    <!-- المنيو المقسم (Menu Sections) -->
     <section id="menu" class="py-10 px-4 bg-[#150e0a]">
-        <div class="max-w-4xl mx-auto">
-            <div class="text-center mb-6">
-                <h2 class="text-2xl font-black text-creamText">قائمة الطعام</h2>
-                <p class="text-amber-100/60 text-xs mt-1">اضغط على المقاس لإضافة الصنف للسلة</p>
+        <div class="max-w-4xl mx-auto space-y-10">
+            <div class="text-center">
+                <h2 class="text-2xl font-black text-creamText">قائمة الطعام حسب القسم</h2>
+                <p class="text-amber-100/60 text-xs mt-1">تصفح الأقسام واطلب ما تحب بكل سهولة</p>
             </div>
 
-            <!-- أزرار التصنيفات (مخصصة للموبايل بتمرير أفقي سلس) -->
-            <div class="flex gap-2 overflow-x-auto pb-3 mb-6 hide-scrollbar text-xs">
-                <button onclick="setCategory('all')" data-cat="all" class="cat-btn active whitespace-nowrap px-4 py-2.5 rounded-xl font-bold bg-burntOrange text-white shrink-0">الكل</button>
-                <button onclick="setCategory('pizza')" data-cat="pizza" class="cat-btn whitespace-nowrap px-4 py-2.5 rounded-xl font-bold bg-cardDark text-amber-100/80 border border-amber-500/2output shrink-0">🍕 بيتزا</button>
-                <button onclick="setCategory('savory_pie')" data-cat="savory_pie" class="cat-btn whitespace-nowrap px-4 py-2.5 rounded-xl font-bold bg-cardDark text-amber-100/80 border border-amber-500/20 shrink-0">🥧 فطير حادق</button>
-                <button onclick="setCategory('sweet_pie')" data-cat="sweet_pie" class="cat-btn whitespace-nowrap px-4 py-2.5 rounded-xl font-bold bg-cardDark text-amber-100/80 border border-amber-500/20 shrink-0">🍯 فطير حلو</button>
-                <button onclick="setCategory('iskandarani')" data-cat="iskandarani" class="cat-btn whitespace-nowrap px-4 py-2.5 rounded-xl font-bold bg-cardDark text-amber-100/80 border border-amber-500/20 shrink-0">🥖 مطبق</button>
-                <button onclick="setCategory('crepe')" data-cat="crepe" class="cat-btn whitespace-nowrap px-4 py-2.5 rounded-xl font-bold bg-cardDark text-amber-100/80 border border-amber-500/20 shrink-0">🌯 كريب</button>
-                <button onclick="setCategory('hawawshi')" data-cat="hawawshi" class="cat-btn whitespace-nowrap px-4 py-2.5 rounded-xl font-bold bg-cardDark text-amber-100/80 border border-amber-500/20 shrink-0">🔥 حواوشي</button>
-                <button onclick="setCategory('pasta')" data-cat="pasta" class="cat-btn whitespace-nowrap px-4 py-2.5 rounded-xl font-bold bg-cardDark text-amber-100/80 border border-amber-500/20 shrink-0">🍝 مكرونة</button>
-                <button onclick="setCategory('saroukh')" data-cat="saroukh" class="cat-btn whitespace-nowrap px-4 py-2.5 rounded-xl font-bold bg-cardDark text-amber-100/80 border border-amber-500/20 shrink-0">🌯 صاروخ</button>
-                <button onclick="setCategory('syrian')" data-cat="syrian" class="cat-btn whitespace-nowrap px-4 py-2.5 rounded-xl font-bold bg-cardDark text-amber-100/80 border border-amber-500/20 shrink-0">🌮 سوري</button>
+            <!-- 1. قسم البيتزا إيطالي -->
+            <div class="space-y-3">
+                <h3 class="text-amberGold font-black text-base flex items-center gap-2 border-b border-amber-500/20 pb-2">
+                    <span>🍕</span> بيتزا إيطالي
+                </h3>
+                <div id="grid-pizza" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
             </div>
 
-            <!-- بحث سريح -->
-            <div class="relative mb-6">
-                <input type="text" id="search-input" oninput="renderMenu()" placeholder="ابحث عن صنف..." class="w-full bg-cardDark border border-amber-500/25 rounded-xl py-2.5 pr-10 pl-4 text-xs text-creamText placeholder-amber-200/40 focus:outline-none focus:border-amberGold">
-                <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-1/2 -translate-y-1/2 text-amberGold/70 text-xs"></i>
+            <!-- 2. قسم الفطير الحادق الشرقي -->
+            <div class="space-y-3">
+                <h3 class="text-amberGold font-black text-base flex items-center gap-2 border-b border-amber-500/20 pb-2">
+                    <span>🥧</span> فطير حادق شرقي
+                </h3>
+                <div id="grid-savory_pie" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
             </div>
 
-            <!-- شبكة الأصناف المبسطة -->
-            <div id="menu-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+            <!-- 3. قسم فطير حلو جدو -->
+            <div class="space-y-3">
+                <h3 class="text-amberGold font-black text-base flex items-center gap-2 border-b border-amber-500/20 pb-2">
+                    <span>🍯</span> فطير حلو جدو
+                </h3>
+                <div id="grid-sweet_pie" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+            </div>
+
+            <!-- 4. قسم الفطير المطبق الاسكندراني -->
+            <div class="space-y-3">
+                <h3 class="text-amberGold font-black text-base flex items-center gap-2 border-b border-amber-500/20 pb-2">
+                    <span>🥖</span> فطير مطبق اسكندراني
+                </h3>
+                <div id="grid-iskandarani" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+            </div>
+
+            <!-- 5. قسم الكريب -->
+            <div class="space-y-3">
+                <h3 class="text-amberGold font-black text-base flex items-center gap-2 border-b border-amber-500/20 pb-2">
+                    <span>🌯</span> الكريب (حادي وحلو)
+                </h3>
+                <div id="grid-crepe" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+            </div>
+
+            <!-- 6. قسم الحواوشي -->
+            <div class="space-y-3">
+                <h3 class="text-amberGold font-black text-base flex items-center gap-2 border-b border-amber-500/20 pb-2">
+                    <span>🔥</span> حواوشي ووش بيتزا
+                </h3>
+                <div id="grid-hawawshi" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+            </div>
+
+            <!-- 7. قسم المكرونات -->
+            <div class="space-y-3">
+                <h3 class="text-amberGold font-black text-base flex items-center gap-2 border-b border-amber-500/20 pb-2">
+                    <span>🍝</span> المكرونات
+                </h3>
+                <div id="grid-pasta" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+            </div>
+
+            <!-- 8. قسم ووتش صاروخ جدو -->
+            <div class="space-y-3">
+                <h3 class="text-amberGold font-black text-base flex items-center gap-2 border-b border-amber-500/20 pb-2">
+                    <span>🥖</span> ووتش صاروخ جدو
+                </h3>
+                <div id="grid-saroukh" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+            </div>
+
+            <!-- 9. قسم السندوتشات السوري -->
+            <div class="space-y-3">
+                <h3 class="text-amberGold font-black text-base flex items-center gap-2 border-b border-amber-500/20 pb-2">
+                    <span>🌮</span> سندوتش سوري
+                </h3>
+                <div id="grid-syrian" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- قسم التقييمات -->
+    <section id="reviews" class="py-10 px-4 bg-espresso border-t border-amber-500/10">
+        <div class="max-w-md mx-auto text-center space-y-3">
+            <span class="bg-amberGold/15 text-amberGold px-3 py-1 rounded-full text-xs font-bold">تقييمات العملاء</span>
+            <h2 class="text-xl font-black text-creamText">ثقة عملاء العجمي</h2>
+            <div class="bg-cardDark border border-amber-500/20 rounded-2xl p-4 space-y-2">
+                <div class="text-3xl font-black text-amberGold">3.9 ★</div>
+                <p class="text-xs text-amber-100/80">بناءً على أكثر من 403 تقييم حقيقي على جوجل، فخورون بخدمتكم طوال اليوم.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- قسم الموقع وأوقات العمل -->
+    <section id="location" class="py-10 px-4 bg-[#150e0a] border-t border-amber-500/10">
+        <div class="max-w-md mx-auto space-y-4 text-center">
+            <span class="bg-amberGold/15 text-amberGold px-3 py-1 rounded-full text-xs font-bold">موقعنا</span>
+            <h2 class="text-xl font-black text-creamText">العجمي أبو يوسف</h2>
+            <div class="bg-cardDark border border-amber-500/20 rounded-2xl p-4 space-y-3 text-xs text-amber-100/90 leading-relaxed">
+                <p><i class="fa-solid fa-location-dot text-amberGold ml-1"></i> الكيلو 19.5 - بجوار رنين، الإسكندرية.</p>
+                <p><i class="fa-solid fa-clock text-amberGold ml-1"></i> مفتوح طوال أيام الأسبوع <strong class="text-amberGold">24 ساعة</strong>.</p>
+            </div>
         </div>
     </section>
 
     <!-- التذييل مع التوقيع المطلوب -->
     <footer class="bg-espresso border-t border-amber-500/15 py-6 px-4 text-center space-y-2">
-        <p class="text-xs text-amber-200/70">فطاطري جدو - العجمي أبو يوسف الكيلو 19.5 بجوار رنين</p>
+        <p class="text-xs text-amber-200/70">فطاطري جدو - الإسكندرية</p>
         <p class="text-xs font-bold text-amberGold">
             أنشأ بواسطة إياد إيهاب • <span dir="ltr">01204993406</span>
         </p>
     </footer>
 
-    <!-- سكربت التشغيل المبسط -->
+    <!-- سكربت التشغيل وتعبئة الأقسام -->
     <script>
         const menuItems = [
             { id: 1, name: 'بيتزا مارجريتا', category: 'pizza', prices: { S: 80, M: 120, L: 180 } },
@@ -322,61 +395,41 @@
             { id: 196, name: 'سوري استريبس', category: 'syrian', prices: { single: 100 } }
         ];
 
-        let currentCategory = 'all';
         let cart = [];
 
-        function setCategory(cat) {
-            currentCategory = cat;
-            document.querySelectorAll('.cat-btn').forEach(btn => {
-                if(btn.dataset.cat === cat) {
-                    btn.className = "cat-btn active whitespace-nowrap px-4 py-2.5 rounded-xl font-bold bg-burntOrange text-white shrink-0";
-                } else {
-                    btn.className = "cat-btn whitespace-nowrap px-4 py-2.5 rounded-xl font-bold bg-cardDark text-amber-100/80 border border-amber-500/20 shrink-0";
-                }
-            });
-            renderMenu();
-        }
-
-        function renderMenu() {
-            const grid = document.getElementById('menu-grid');
-            const query = document.getElementById('search-input').value.toLowerCase();
+        function renderAllCategories() {
+            const categories = ['pizza', 'savory_pie', 'sweet_pie', 'iskandarani', 'crepe', 'hawawshi', 'pasta', 'saroukh', 'syrian'];
             
-            const filtered = menuItems.filter(item => {
-                const matchesCat = currentCategory === 'all' || item.category === currentCategory;
-                const matchesSearch = item.name.toLowerCase().includes(query);
-                return matchesCat && matchesSearch;
-            });
-
-            if(filtered.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-8 text-amber-200/50 text-xs">عذراً، لم نجد صنف مطابق لبحثك.</div>`;
-                return;
-            }
-
-            grid.innerHTML = filtered.map(item => {
-                let buttonsHtml = '';
-                if(item.prices.single) {
-                    buttonsHtml = `<button onclick="addToCartItem(${item.id}, 'عادي', ${item.prices.single})" class="bg-amberGold/20 hover:bg-amberGold text-amberGold hover:text-espresso font-bold py-1.5 px-3 rounded-xl text-xs transition-all flex items-center justify-center gap-1"><i class="fa-solid fa-plus"></i> (${item.prices.single} ج)</button>`;
-                } else {
-                    let buttonsList = [];
-                    for(let size in item.prices) {
-                        let sizeName = size === 'S' ? 'صغير' : size === 'M' ? 'وسط' : 'كبير';
-                        let price = item.prices[size];
-                        buttonsList.push(`<button onclick="addToCartItem(${item.id}, '${sizeName}', ${price})" class="bg-white/5 hover:bg-amberGold hover:text-espresso text-creamText border border-amber-500/20 font-bold py-1.5 px-2 rounded-xl text-[11px] transition-all">${sizeName}: ${price}ج</button>`);
+            categories.forEach(cat => {
+                const container = document.getElementById(`grid-${cat}`);
+                const items = menuItems.filter(i => i.category === cat);
+                
+                container.innerHTML = items.map(item => {
+                    let buttonsHtml = '';
+                    if(item.prices.single) {
+                        buttonsHtml = `<button onclick="addToCartItem(${item.id}, 'عادي', ${item.prices.single})" class="bg-amberGold/20 hover:bg-amberGold text-amberGold hover:text-espresso font-bold py-1.5 px-3 rounded-xl text-xs transition-all flex items-center justify-center gap-1"><i class="fa-solid fa-plus"></i> (${item.prices.single} ج)</button>`;
+                    } else {
+                        let buttonsList = [];
+                        for(let size in item.prices) {
+                            let sizeName = size === 'S' ? 'صغير' : size === 'M' ? 'وسط' : 'كبير';
+                            let price = item.prices[size];
+                            buttonsList.push(`<button onclick="addToCartItem(${item.id}, '${sizeName}', ${price})" class="bg-white/5 hover:bg-amberGold hover:text-espresso text-creamText border border-amber-500/20 font-bold py-1.5 px-2 rounded-xl text-[11px] transition-all">${sizeName}: ${price}ج</button>`);
+                        }
+                        buttonsHtml = `<div class="flex gap-1 flex-wrap justify-end">${buttonsList.join('')}</div>`;
                     }
-                    buttonsHtml = `<div class="flex gap-1 flex-wrap">${buttonsList.join('')}</div>`;
-                }
 
-                return `
-                    <div class="bg-cardDark border border-amber-500/20 rounded-xl p-3.5 flex items-center justify-between gap-3 shadow-md">
-                        <div>
-                            <h3 class="font-bold text-creamText text-xs sm:text-sm">${item.name}</h3>
+                    return `
+                        <div class="bg-cardDark border border-amber-500/20 rounded-xl p-3 flex items-center justify-between gap-2 shadow-md">
+                            <div>
+                                <h4 class="font-bold text-creamText text-xs sm:text-sm">${item.name}</h4>
+                            </div>
+                            <div>
+                                ${buttonsHtml}
+                            </div>
                         </div>
-                        <div>
-                            ${buttonsHtml}
-                        </div>
-                    </div>
-                `;
-            }).join('');
+                    `;
+                }).join('');
+            });
         }
 
         function addToCartItem(id, sizeName, price) {
@@ -480,7 +533,9 @@
             setTimeout(() => toast.remove(), 2500);
         }
 
-        document.addEventListener('DOMContentLoaded', () => { renderMenu(); });
+        document.addEventListener('DOMContentLoaded', () => {
+            renderAllCategories();
+        });
     </script>
 </body>
 </html>
